@@ -1,6 +1,7 @@
 const express = require("express");
 const con = require("./connection/sqlDB");
-
+const userRoute = require("./routers/user");
+const cors = require("cors");
 const app = express();
 
 // CONNECT WITH SQL-DB ----------------------
@@ -13,19 +14,15 @@ con.connect((err) => {
   console.log("SQL Data-Base Connected Successfully");
 });
 
+// MIDDLEWARE ----------------------------
+
+app.use(express.urlencoded());
+app.use(express.json());
+app.use(cors());
+
 // GET METHOD ------------------------
 
-app.get("/", (req, res) => {
-  const getQuery = "Select * from registration_user";
-
-  con.query(getQuery, (err, result) => {
-    if (err) {
-      res.status(500).send("Server SomeThing Went Wrong");
-    } else {
-      res.json(result);
-    }
-  });
-});
+app.use("/", userRoute);
 
 // LISTEN SERVER ---------------------
 
